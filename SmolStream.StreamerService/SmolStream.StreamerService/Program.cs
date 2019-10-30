@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 
 namespace SmolStream.StreamerService
 {
@@ -16,6 +17,16 @@ namespace SmolStream.StreamerService
             }
 
             Console.WriteLine("Valid ID entered, continuing...");
+
+            var twitchClient = new RestClient("https://api.twitch.tv/helix");
+            var request = new RestRequest("streams", Method.GET);
+            request.AddHeader("Client-ID", clientId);
+            request.AddParameter("first", "100");
+
+            var response = twitchClient.Execute(request);
+
+            Console.WriteLine("Top 20 Streams:");
+            Console.WriteLine(response.Content);
             Console.ReadLine();
         }
     }
