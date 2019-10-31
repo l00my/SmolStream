@@ -1,0 +1,45 @@
+﻿@page "/streams/{GameName}"
+
+@using SmolStream.BlazorApp.Data
+@using SmolStream.BlazorApp.Services
+@inject StreamDataService StreamDataService
+
+<h1>Top @GameName Smol Streams on Twitch</h1>
+
+<p>This component demonstrates fetching data from the Twitch API Streams endpoint for @GameName.</p>
+
+@if (streams == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Streams (toString)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in streams)
+            {
+                <tr>
+                    <td><a href="stream/@s.UserName"><img src="@s.Thumbnail" /></a></td>
+                    <td>@s.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string GameName { get; set; }
+
+    Stream[] streams;
+
+    protected override async Task OnInitializedAsync()
+    {
+        streams = await StreamDataService.GetStreamDataAsync(GameName);
+    }
+}

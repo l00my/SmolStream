@@ -1,0 +1,42 @@
+﻿@page "/games"
+
+@using SmolStream.BlazorApp.Data
+@using SmolStream.BlazorApp.Services
+@inject StreamDataService StreamDataService
+
+<h1>Top 100 Games on Twitch</h1>
+
+<p>This component demonstrates fetching data from the Twitch API Games endpoint.</p>
+
+@if (games == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Game (toString)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in games)
+            {
+                <tr>
+                    <td><a href="streams/@g.Name"><img src="@g.BoxArtUrl" /></a></td>
+                    <td>@g.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    Game[] games;
+
+    protected override async Task OnInitializedAsync()
+    {
+        games = await StreamDataService.GetGameDataAsync();
+    }
+}
