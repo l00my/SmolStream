@@ -24,7 +24,7 @@ else
             @foreach (var g in games)
             {
                 <tr>
-                    <td><img src="@g.BoxArtUrl" /></td>
+                    <td><a href="streams/@g.Name"><img src="@g.BoxArtUrl" /></a></td>
                     <td>@g.ToString()</td>
                 </tr>
             }

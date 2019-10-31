@@ -17,7 +17,7 @@ namespace SmolStream.BlazorApp.Services
         private readonly string _twitchUrl = "https://api.twitch.tv/helix";
         private IConfiguration _configuration;
 
-        public Game[] Games;
+        public IEnumerable<Game> Games;
 
         public StreamDataService(IConfiguration configuration)
         {
@@ -34,7 +34,25 @@ namespace SmolStream.BlazorApp.Services
 
             var response = await twitchClient.ExecuteTaskAsync(request);
             ParseResponseData(response, games);
+            if (Games == null) { Games = games; }
             return games.ToArray();
+        }
+
+        public async Task<Stream[]> GetStreamDataAsync(string gameName)
+        {
+            var gameId = Games.Where(g => g.Name == gameName).First().ID;
+
+            var streams = new List<Stream>();
+            var twitchClient = new RestClient(_twitchUrl);
+            var request = new RestRequest("streams", Method.GET);
+            request.AddHeader("Client-ID", _configuration.GetValue<string>("TwitchClientID"));
+            request.AddParameter("first", _firstValue);
+            request.AddParameter("game_id", gameId);
+
+            var response = await twitchClient.ExecuteTaskAsync(request);
+            ParseResponseData(response, streams);
+
+            return streams.Where(s => s.Viewers <= _targetViewerCount).ToArray();
         }
 
         private void ParseResponseData<T>(IRestResponse response, IList<T> collection)

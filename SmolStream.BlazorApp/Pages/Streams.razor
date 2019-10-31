@@ -4,9 +4,9 @@
 @using SmolStream.BlazorApp.Services
 @inject StreamDataService StreamDataService
 
-<h1>Top 100 Games on Twitch</h1>
+<h1>Top @GameName Smol Streams on Twitch</h1>
 
-<p>This component demonstrates fetching data from the Twitch API Games endpoint.</p>
+<p>This component demonstrates fetching data from the Twitch API Streams endpoint for @GameName.</p>
 
 @if (streams == null)
 {
@@ -17,15 +17,15 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Game (toString)</th>
+                <th>Streams (toString)</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var s in streams)
             {
                 <tr>
-                    <td><img src="@g.BoxArtUrl" /></td>
-                    <td>@g.ToString()</td>
+                    <td><a href="stream/@s.UserName"><img src="@s.Thumbnail" /></a></td>
+                    <td>@s.ToString()</td>
                 </tr>
             }
         </tbody>
@@ -35,10 +35,11 @@ else
 @code {
     [Parameter]
     public string GameName { get; set; }
+
     Stream[] streams;
 
     protected override async Task OnInitializedAsync()
     {
-        games = await StreamDataService.GetStreamDataAsync();
+        streams = await StreamDataService.GetStreamDataAsync(GameName);
     }
 }

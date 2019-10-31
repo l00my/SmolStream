@@ -1,0 +1,17 @@
+﻿@page "/stream/{StreamerName}"
+
+@using SmolStream.BlazorApp.Data
+@using SmolStream.BlazorApp.Services
+@inject StreamDataService StreamDataService
+
+<h1>@StreamerName</h1>
+
+<p>@StreamerName's stream</p>
+
+<iframe id="player" src="https://player.twitch.tv/?channel=@StreamerName" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620" autoplay="false"></iframe>
+<iframe id="chat" src="https://www.twitch.tv/embed/@StreamerName/chat" frameborder="0" scrolling="no" height="500" width="350"></iframe>
+
+@code {
+    [Parameter]
+    public string StreamerName { get; set; }
+}
