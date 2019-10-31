@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SmolStream.BlazorApp.Data;
+using SmolStream.BlazorApp.Services;
 
 namespace SmolStream.BlazorApp
 {
@@ -29,6 +30,7 @@ namespace SmolStream.BlazorApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<StreamDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

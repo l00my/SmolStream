@@ -5,6 +5,7 @@ using SmolStream.BlazorApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SmolStream.BlazorApp.Services
@@ -14,28 +15,26 @@ namespace SmolStream.BlazorApp.Services
         private readonly int _targetViewerCount = 150;
         private readonly int _firstValue = 100;
         private readonly string _twitchUrl = "https://api.twitch.tv/helix";
-        private List<Game> _games = new List<Game>();
         private IConfiguration _configuration;
+
+        public Game[] Games;
 
         public StreamDataService(IConfiguration configuration)
         {
             _configuration = configuration;
-
-            if(_games.Count == 0)
-            {
-                GetGameData();
-            }
         }
 
-        private void GetGameData()
+        public async Task<Game[]> GetGameDataAsync()
         {
+            var games = new List<Game>();
             var twitchClient = new RestClient(_twitchUrl);
             var request = new RestRequest("games/top", Method.GET);
             request.AddHeader("Client-ID", _configuration.GetValue<string>("TwitchClientID"));
             request.AddParameter("first", _firstValue);
 
-            var response = twitchClient.Execute(request);
-            ParseResponseData(response, _games);
+            var response = await twitchClient.ExecuteTaskAsync(request);
+            ParseResponseData(response, games);
+            return games.ToArray();
         }
 
         private void ParseResponseData<T>(IRestResponse response, IList<T> collection)
